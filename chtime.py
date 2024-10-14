@@ -121,7 +121,7 @@ async def on_command_error(ctx, error):
     await ctx.channel.send('>>> Oh oh! An Error occurred o_o\n Did you maybe forget to enter the boss name?')
     return
 
-@bot.command(name='help')
+@bot.command(name='info')
 async def getInfo(ctx):
     message = '>>> **Available commands:**\n'
     message += '```diff\n'
