@@ -42,71 +42,8 @@ bossinfo = {
     "prot": 130
 }
 
-bosstimers = {
-    #meteoric
-    "doomclaw": 0,
-    "bonehead": 0,
-    "redbane": 0,
-    "goretusk": 0,
-    "coppinger": 0,
-    "rockbelly": 0,
-    #frozen
-    "eye": 0,
-    "swampi": 0,
-    "woody": 0,
-    "chain": 0,
-    "grom": 0,
-    "pyrus": 0,
-    #dragonlord
-    "150": 0,
-    "155": 0,
-    "160": 0,
-    "165": 0,
-    "170": 0,
-    "180": 0,
-    #exalted dragonlord
-    "onyx": 0,
-    "skath": 0,
-    "gron": 0,
-    "dobby": 0,
-    "flappy": 0,
-    "phantom": 0,
-    "unox": 0,
-    "prot": 0
-}
-
-timerRunning = {
-    #meteoric
-    "doomclaw": False,
-    "bonehead": False,
-    "redbane": False,
-    "goretusk": False,
-    "coppinger": False,
-    "rockbelly": False,
-    #frozen
-    "eye": False,
-    "swampi": False,
-    "woody": False,
-    "chain": False,
-    "grom": False,
-    "pyrus": False,
-    #dragonlord
-    "150": False,
-    "155": False,
-    "160": False,
-    "165": False,
-    "170": False,
-    "180": False,
-    #exalted dragonlord
-    "onyx": False,
-    "skath": False,
-    "gron": False,
-    "dobby": False,
-    "flappy": False,
-    "phantom": False,
-    "unox": False,
-    "prot": False
-}
+bosstimers = {name: 0 for name in bossinfo.keys()}
+timerRunning = {name: False for name in bossinfo.keys()}
 
 TOKEN = os.getenv('TOKEN')
 bot = commands.Bot(command_prefix='!ch', intents=intents)
@@ -147,7 +84,7 @@ async def getStatus(ctx):
 async def getNames(ctx):
     names = '>>> **Available bosses:**\n'
     names += '```diff\n'
-    for key, value in bosstimers.items():
+    for key in bosstimers.keys():
         names += f'- {key}\n'
     names += '```'
     await ctx.channel.send(names)
@@ -159,11 +96,26 @@ async def restartTimer(ctx, name):
     if name not in bosstimers.keys():
         await ctx.channel.send(f'> {name} is not a valid boss name. Type "!names" to list all valid names.')
         return
-    if not timerRunning[name]:
-        await startTimer(ctx, name)
-        return
     bosstimers[name] = float(bossinfo[name] * 60000)
+    timerRunning[name] = True
+    timestamp = time.time() * 1000
+
     await ctx.channel.send(f'>>> :alarm_clock: The timer for {name} has been restarted.\n```ini\n[{name:<20}{printTime(bosstimers[name])}]\n```')
+
+    while bosstimers[name] > 0:
+        await asyncio.sleep(1)
+        bosstimers[name] -= time.time() * 1000 - timestamp
+        timestamp = time.time() * 1000
+
+        if bosstimers[name] <= 300000 and timerRunning[name]:  # 5-Minuten-Erinnerung
+            channel = discord.utils.get(ctx.guild.channels, name="boss-timer")
+            if channel:
+                await channel.send(f"@everyone :alarm_clock: Reminder! Only 5 minutes left until **{name}** is due!")
+            break
+
+    if bosstimers[name] > -10000000:
+        await ctx.channel.send(':crossed_swords:' + f'**{name} is due!**'.upper())
+    timerRunning[name] = False
     return
 
 @bot.command(name='end')
@@ -201,15 +153,14 @@ async def startTimer(ctx, name):
         bosstimers[name] -= time.time() * 1000 - timestamp
         timestamp = time.time() * 1000
 
-        # Check if there are 5 minutes left and send reminder
-        if bosstimers[name] <= 300000 and timerRunning[name]:  # 5 minutes in milliseconds
+        if bosstimers[name] <= 300000 and timerRunning[name]:  # 5-Minuten-Erinnerung
             channel = discord.utils.get(ctx.guild.channels, name="boss-timer")
             if channel:
                 await channel.send(f"@everyone :alarm_clock: Reminder! Only 5 minutes left until **{name}** is due!")
-            break  # Ensures the reminder is only sent once
+            break
 
     if bosstimers[name] > -10000000:
-        await ctx.channel.send(':crossed_swords:' + f'**{name} is due!**'.upper())
+        await ctx.channel.send(':crossed_swords:' + f"@everyone**{name} is due!**".upper())
     timerRunning[name] = False
     return
 
@@ -223,7 +174,25 @@ async def setTimer(ctx, name, minutes: int):
 
     bosstimers[name] = minutes * 60000
     timerRunning[name] = True
+    timestamp = time.time() * 1000
+
     await ctx.channel.send(f'>>> :alarm_clock: Timer for {name} manually set to {minutes} minutes.\n```ini\n[{name:<20}{printTime(bosstimers[name])}]\n```')
+
+    while bosstimers[name] > 0:
+        await asyncio.sleep(1)
+        bosstimers[name] -= time.time() * 1000 - timestamp
+        timestamp = time.time() * 1000
+
+        if bosstimers[name] <= 300000 and timerRunning[name]:  # 5-Minuten-Erinnerung
+            channel = discord.utils.get(ctx.guild.channels, name="boss-timer")
+            if channel:
+                await channel.send(f"@everyone :alarm_clock: Reminder! Only 5 minutes left until **{name}** is due!")
+            break
+
+    if bosstimers[name] > -10000000:
+        await ctx.channel.send(':crossed_swords:' + f'**{name} is due!**'.upper())
+    timerRunning[name] = False
+    return
 
 def printTime(millis):
     hours = math.floor(millis / 3600000)
