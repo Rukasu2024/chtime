@@ -109,8 +109,7 @@ timerRunning = {
 }
 
 TOKEN = os.getenv('TOKEN')
-
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix='!ch', intents=intents)
 
 @bot.event
 async def on_ready():
@@ -121,7 +120,7 @@ async def on_command_error(ctx, error):
     await ctx.channel.send('>>> Oh oh! An Error occurred o_o\n Did you maybe forget to enter the boss name?')
     return
 
-@bot.command(name='info')
+@bot.command(name='help')
 async def getInfo(ctx):
     message = '>>> **Available commands:**\n'
     message += '```diff\n'
@@ -201,6 +200,13 @@ async def startTimer(ctx, name):
         await asyncio.sleep(1)
         bosstimers[name] -= time.time() * 1000 - timestamp
         timestamp = time.time() * 1000
+
+        # Check if there are 5 minutes left and send reminder
+        if bosstimers[name] <= 300000 and timerRunning[name]:  # 5 minutes in milliseconds
+            channel = discord.utils.get(ctx.guild.channels, name="boss-timer")
+            if channel:
+                await channel.send(f"@everyone :alarm_clock: Reminder! Only 5 minutes left until **{name}** is due!")
+            break  # Ensures the reminder is only sent once
 
     if bosstimers[name] > -10000000:
         await ctx.channel.send(':crossed_swords:' + f'**{name} is due!**'.upper())
