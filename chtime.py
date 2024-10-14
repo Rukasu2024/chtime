@@ -110,7 +110,7 @@ timerRunning = {
 
 TOKEN = os.getenv('TOKEN')
 
-bot = commands.Bot(command_prefix='!ch', intents=intents)
+bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
@@ -118,23 +118,23 @@ async def on_ready():
 
 @bot.event
 async def on_command_error(ctx, error):
-    await ctx.channel.send('>>> Oh oh! An Error occured o_o\n Did you maybe forget to enter the bossname?')
+    await ctx.channel.send('>>> Oh oh! An Error occurred o_o\n Did you maybe forget to enter the boss name?')
     return
 
-@bot.command(name='info')
+@bot.command(name='help')
 async def getInfo(ctx):
     message = '>>> **Available commands:**\n'
     message += '```diff\n'
-    message += '+ !chnames           - lists the names of all available bosses\n'
-    message += '+ !chstatus          - lists all active timers\n'
-    message += '+ !chtime <name>     - starts timer for a certain boss\n'
-    message += '+ !chend <name>      - ends the timer for a certain boss\n'
-    message += '+ !chrestart <name>  - restarts timer for a certain boss\n'
+    message += '+ !names              - lists the names of all available bosses\n'
+    message += '+ !soon               - lists all active timers\n'
+    message += '+ !time <name>        - starts timer for a certain boss\n'
+    message += '+ !end <name>         - ends the timer for a certain boss\n'
+    message += '+ !reset <name>       - restarts timer for a certain boss\n'
     message += '```'
     await ctx.channel.send(message)
     return
 
-@bot.command(name='status')
+@bot.command(name='soon')
 async def getStatus(ctx):
     status = '>>> **Active timers:**\n'
     for key, value in bosstimers.items():
@@ -148,20 +148,20 @@ async def getNames(ctx):
     names = '>>> **Available bosses:**\n'
     names += '```diff\n'
     for key, value in bosstimers.items():
-            names += f'- {key}\n'
+        names += f'- {key}\n'
     names += '```'
     await ctx.channel.send(names)
     return
 
-@bot.command(name='restart')
+@bot.command(name='reset')
 async def restartTimer(ctx, name):
     name = name.strip().lower()
     if name not in bosstimers.keys():
-        await ctx.channel.send(f'> {name} is not a valid boss name. Type "!chnames" to list all valid names.')
+        await ctx.channel.send(f'> {name} is not a valid boss name. Type "!names" to list all valid names.')
         return
     if not timerRunning[name]:
-      await startTimer(ctx, name)
-      return
+        await startTimer(ctx, name)
+        return
     bosstimers[name] = float(bossinfo[name] * 60000)
     await ctx.channel.send(f'>>> :alarm_clock: The timer for {name} has been restarted.\n```ini\n[{name:<20}{printTime(bosstimers[name])}]\n```')
     return
@@ -171,7 +171,7 @@ async def endTimer(ctx, name):
     name = name.strip().lower()
 
     if name not in bosstimers.keys():
-        await ctx.channel.send(f'> {name} is not a valid boss name. Type "!chtime names" to list all valid names.')
+        await ctx.channel.send(f'> {name} is not a valid boss name. Type "!names" to list all valid names.')
         return
 
     bosstimers[name] = -10000000
@@ -183,7 +183,7 @@ async def startTimer(ctx, name):
     name = name.strip().lower()
 
     if name not in bosstimers.keys():
-        await ctx.channel.send(f'> {name} is not a valid boss name. Type "!chnames" to list all valid names.')
+        await ctx.channel.send(f'> {name} is not a valid boss name. Type "!names" to list all valid names.')
         return
 
     if timerRunning[name]:
@@ -194,7 +194,7 @@ async def startTimer(ctx, name):
     bosstimers[name] = float(bossinfo[name] * 60000)
     timestamp = time.time() * 1000
 
-    await ctx.channel.send(f'>>> :alarm_clock: Timer started succesfully.\n```ini\n[{name:<20}{printTime(bosstimers[name])}]\n```')
+    await ctx.channel.send(f'>>> :alarm_clock: Timer started successfully.\n```ini\n[{name:<20}{printTime(bosstimers[name])}]\n```')
 
     while bosstimers[name] > 0:
         await asyncio.sleep(1)
@@ -207,10 +207,10 @@ async def startTimer(ctx, name):
     return
 
 def printTime(millis):
-        hours = math.floor(millis / 3600000)
-        minutes = math.floor((millis % 3600000) / 60000)
-        seconds = math.floor((millis % 60000) / 1000)
-        return '{0:02d}:{1:02d}:{2:02d}'.format(hours, minutes, seconds)
+    hours = math.floor(millis / 3600000)
+    minutes = math.floor((millis % 3600000) / 60000)
+    seconds = math.floor((millis % 60000) / 1000)
+    return '{0:02d}:{1:02d}:{2:02d}'.format(hours, minutes, seconds)
 
 keep_alive()
 bot.run(TOKEN)
