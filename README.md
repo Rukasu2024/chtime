@@ -7,4 +7,4 @@ Discord bot for timing celtic heroes bosses
 - !time <name>     - starts timer for a certain boss
 - !end <name>      - ends the timer for a certain boss
 - !reset <name>  - restarts timer for a certain boss
-- !help            - command list
+- !info            - command list
