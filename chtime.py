@@ -10,28 +10,28 @@ intents = discord.Intents.default()
 intents.message_content = True  # Aktiviert die Nachrichteninhalt-Intents
 
 bossinfo = {
-    #meteoric
+    # meteoric
     "doomclaw": 7,
     "bonehead": 15,
     "redbane": 20,
     "goretusk": 20,
     "coppinger": 20,
     "rockbelly": 15,
-    #frozen
+    # frozen
     "eye": 30,
     "swampi": 35,
     "woody": 40,
     "chain": 45,
     "grom": 50,
     "pyrus": 60,
-    #dragonlord
+    # dragonlord
     "150": 40,
     "155": 50,
     "160": 60,
     "165": 70,
     "170": 80,
     "180": 90,
-    #exalted dragonlord
+    # exalted dragonlord
     "onyx": 60,
     "skath": 70,
     "gron": 80,
@@ -46,7 +46,7 @@ bosstimers = {name: 0 for name in bossinfo.keys()}
 timerRunning = {name: False for name in bossinfo.keys()}
 
 TOKEN = os.getenv('TOKEN')
-bot = commands.Bot(command_prefix='!ch', intents=intents)
+bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
@@ -114,7 +114,9 @@ async def restartTimer(ctx, name):
             break
 
     if bosstimers[name] > -10000000:
-        await ctx.channel.send(':crossed_swords:' + f'**{name} is due!**'.upper())
+        channel = discord.utils.get(ctx.guild.channels, name="boss-timer")
+        if channel:
+            await channel.send(f"@everyone :crossed_swords: **{name} is due!**".upper())
     timerRunning[name] = False
     return
 
@@ -160,7 +162,9 @@ async def startTimer(ctx, name):
             break
 
     if bosstimers[name] > -10000000:
-        await ctx.channel.send(':crossed_swords:' + f"@everyone**{name} is due!**".upper())
+        channel = discord.utils.get(ctx.guild.channels, name="boss-timer")
+        if channel:
+            await channel.send(f"@everyone :crossed_swords: **{name} is due!**".upper())
     timerRunning[name] = False
     return
 
@@ -190,7 +194,9 @@ async def setTimer(ctx, name, minutes: int):
             break
 
     if bosstimers[name] > -10000000:
-        await ctx.channel.send(':crossed_swords:' + f'**{name} is due!**'.upper())
+        channel = discord.utils.get(ctx.guild.channels, name="boss-timer")
+        if channel:
+            await channel.send(f"@everyone :crossed_swords: **{name} is due!**".upper())
     timerRunning[name] = False
     return
 
