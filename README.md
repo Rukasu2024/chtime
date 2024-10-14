@@ -2,10 +2,9 @@
 Discord bot for timing celtic heroes bosses
 
 ## Usage
-- !chnames           - lists the names of all available bosses
-- !chstatus          - lists all active timers
-- !chtime <name>     - starts timer for a certain boss
-- !chend <name>      - ends the timer for a certain boss
-- !chrestart <name>  - restarts timer for a certain boss
-
-- !chinfo            - command list
+- !names           - lists the names of all available bosses
+- !soon          - lists all active timers
+- !time <name>     - starts timer for a certain boss
+- !end <name>      - ends the timer for a certain boss
+- !reset <name>  - restarts timer for a certain boss
+- !help            - command list
