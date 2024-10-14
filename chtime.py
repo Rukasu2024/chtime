@@ -118,7 +118,7 @@ async def restartTimer(ctx, name):
     if bosstimers[name] <= 0:
         channel = discord.utils.get(ctx.guild.channels, name="boss-timer")
         if channel:
-            await channel.send(f"@everyone :crossed_swords: **{name} is due!**".upper())
+            await channel.send(f"@everyone :crossed_swords: **{name}** is due!")
     timerRunning[name] = False
     return
 
@@ -130,7 +130,8 @@ async def endTimer(ctx, name):
         await ctx.channel.send(f'> {name} is not a valid boss name. Type "!names" to list all valid names.')
         return
 
-    bosstimers[name] = -10000000
+    bosstimers[name] = -10000000  # Timer wird auf einen sehr negativen Wert gesetzt
+    timerRunning[name] = False    # Timer als beendet markieren
     await ctx.channel.send(f'> Timer for {name} was terminated manually.')
     return
 
@@ -168,7 +169,7 @@ async def startTimer(ctx, name):
     if bosstimers[name] <= 0:
         channel = discord.utils.get(ctx.guild.channels, name="boss-timer")
         if channel:
-            await channel.send(f"@everyone :crossed_swords: **{name} is due!**".upper())
+            await channel.send(f"@everyone :crossed_swords: **{name}** is due!")
     timerRunning[name] = False
     return
 
@@ -202,7 +203,7 @@ async def setTimer(ctx, name, minutes: int):
     if bosstimers[name] <= 0:
         channel = discord.utils.get(ctx.guild.channels, name="boss-timer")
         if channel:
-            await channel.send(f"@everyone :crossed_swords: **{name} is due!**".upper())
+            await channel.send(f"@everyone :crossed_swords: **{name}** is due!")
     timerRunning[name] = False
     return
 
