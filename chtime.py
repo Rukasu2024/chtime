@@ -10,20 +10,27 @@ intents = discord.Intents.default()
 intents.message_content = True  # Aktiviert die Nachrichteninhalt-Intents
 
 bossinfo = {
+    #meteoric
+    "doomclaw": 7,
+    "bonehead": 15,
+    "redbane": 20,
+    "goretusk": 20,
+    "coppinger": 20,
+    "rockbelly": 15,
     #frozen
     "eye": 30,
     "swampi": 35,
     "woody": 40,
     "chain": 45,
     "grom": 50,
-    "pyrus": 55,
+    "pyrus": 60,
     #dragonlord
-    "150": 60,
-    "155": 70,
-    "160": 80,
-    "165": 90,
-    "170": 100,
-    "180": 110,
+    "150": 40,
+    "155": 50,
+    "160": 60,
+    "165": 70,
+    "170": 80,
+    "180": 90,
     #exalted dragonlord
     "onyx": 60,
     "skath": 70,
@@ -36,6 +43,13 @@ bossinfo = {
 }
 
 bosstimers = {
+    #meteoric
+    "doomclaw": 0,
+    "bonehead": 0,
+    "redbane": 0,
+    "goretusk": 0,
+    "coppinger": 0,
+    "rockbelly": 0,
     #frozen
     "eye": 0,
     "swampi": 0,
@@ -62,6 +76,13 @@ bosstimers = {
 }
 
 timerRunning = {
+    #meteoric
+    "doomclaw": False,
+    "bonehead": False,
+    "redbane": False,
+    "goretusk": False,
+    "coppinger": False,
+    "rockbelly": False,
     #frozen
     "eye": False,
     "swampi": False,
