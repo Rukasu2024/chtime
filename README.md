@@ -8,4 +8,4 @@ Discord bot for timing celtic heroes bosses
 - !chend <name>      - ends the timer for a certain boss
 - !chrestart <name>  - restarts timer for a certain boss
 
-- !chinfo            - print the usage information
+- !chinfo            - command list
