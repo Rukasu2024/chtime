@@ -110,7 +110,7 @@ timerRunning = {
 
 TOKEN = os.getenv('TOKEN')
 
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix='!ch', intents=intents)
 
 @bot.event
 async def on_ready():
@@ -130,6 +130,7 @@ async def getInfo(ctx):
     message += '+ !time <name>        - starts timer for a certain boss\n'
     message += '+ !end <name>         - ends the timer for a certain boss\n'
     message += '+ !reset <name>       - restarts timer for a certain boss\n'
+    message += '+ !set <name> <time>  - sets the timer for a boss manually\n'
     message += '```'
     await ctx.channel.send(message)
     return
@@ -205,6 +206,18 @@ async def startTimer(ctx, name):
         await ctx.channel.send(':crossed_swords:' + f'**{name} is due!**'.upper())
     timerRunning[name] = False
     return
+
+@bot.command(name='set')
+async def setTimer(ctx, name, minutes: int):
+    name = name.strip().lower()
+
+    if name not in bosstimers.keys():
+        await ctx.channel.send(f'> {name} is not a valid boss name. Type "!names" to list all valid names.')
+        return
+
+    bosstimers[name] = minutes * 60000
+    timerRunning[name] = True
+    await ctx.channel.send(f'>>> :alarm_clock: Timer for {name} manually set to {minutes} minutes.\n```ini\n[{name:<20}{printTime(bosstimers[name])}]\n```')
 
 def printTime(millis):
     hours = math.floor(millis / 3600000)
