@@ -110,7 +110,7 @@ timerRunning = {
 
 TOKEN = os.getenv('TOKEN')
 
-bot = commands.Bot(command_prefix='!ch', intents=intents)
+bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
