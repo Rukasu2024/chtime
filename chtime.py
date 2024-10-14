@@ -193,7 +193,7 @@ async def setTimer(ctx, name, minutes: int):
                 await channel.send(f"@everyone :alarm_clock: Reminder! Only 5 minutes left until **{name}** is due!")
             break
 
-    if bosstimers[name] > -10000000:
+    if bosstimers[name] <= 0:
         channel = discord.utils.get(ctx.guild.channels, name="boss-timer")
         if channel:
             await channel.send(f"@everyone :crossed_swords: **{name} is due!**".upper())
