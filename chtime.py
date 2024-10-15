@@ -214,4 +214,4 @@ def printTime(millis):
     return '{0:02d}:{1:02d}:{2:02d}'.format(hours, minutes, seconds)
 
 keep_alive()
-bot.run('MTI5NTE0NzQ2MDA5MTQ0OTM4NQ.G4OS2E.jYK5ats5fCiIn7Gi6N6zHb5U_FYPMzo_TYW5Q8')
+bot.run(TOKEN)
